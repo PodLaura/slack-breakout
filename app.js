@@ -8,10 +8,34 @@ const app = new App({
 
 app.message("hello", 
     async ({ message, say}) => {
-        console.log(`Message received ${message.message}`);
-        await say(`Hey there <@${message.user}>!`);
+        await say({
+            blocks: [
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": `Hey there <@${message.user}>!`
+                    },
+                    "accessory": {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Click Me"
+                        },
+                        "action_id": "button_click"
+                    }
+                }
+            ],
+            text: `Hey there <@${message.user}>!`
+        });
     }
 );
+
+app.action('button_click', async ({ body, ack, say }) => {
+    // Acknowledge the action
+    await ack();
+    await say(`<@${body.user.id}> clicked the button`);
+});
 
 (async () => {
     // Start your app
